@@ -3,6 +3,7 @@ from mac_vendor_lookup import MacLookup
 from subprocess import call
 import sys
 
+save_file = False
 
 # CHECK INPUT
 def take():
@@ -15,14 +16,20 @@ def take():
 
 
 def main_ui():
+    global save_file
     call('clear')
-    print(' ### NETSCAN ###')
+    print('\t### NETSCAN ###')
     print('\n > PRESS [ENTER] TO BEGIN')
     take() 
     call('clear')
     print(' > ENTER IP RANGE TO SCAN: ')
-    print(' - (EXAMPLE: 10.0.0.1/24')  
+    print(' - (EXAMPLE: 10.0.0.1/24)')  
     input_ip = take()
+    call('clear')
+    print(' > WOULD YOU LIKE TO SAVE CLIENT LIST?')
+    save_select = take()
+    if save_select.lower() == 'y':
+        save_file = True
     call('clear')
     try:
         scan(input_ip) 
@@ -33,6 +40,11 @@ def main_ui():
 
 
 def scan (ip):
+    call('clear')
+    if save_file == True:
+        print(' > ENTER NAME FOR NEW FILE:')
+        file_name = take()
+        f = open('data/' + file_name, 'w')
     arp_request = scapy.ARP(pdst=ip)
     broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
     arp_request_broadcast = broadcast/arp_request
@@ -52,12 +64,22 @@ def scan (ip):
         all_hosts.append(new_host)
     
     print('#####################################################################\n')
+    
     for clients in all_hosts:
-        print(' > CLIENT: ' + str(all_hosts.index(clients) + 1))
-        print(' > VENDOR: ' + clients['vendor'].upper())
-        print(' > IP: ' + clients['ip'])
-        print(' > MAC: ' + clients['mac'])
-        print('---------------------------------------------------------------------')
+        
+        report = f''' 
+    > CLIENT: {str(all_hosts.index(clients) + 1)}
+    > VENDOR: {clients['vendor'].upper()}
+    > IP:     {clients['ip']}
+    > MAC:    {clients['mac']}
+         
+ ---------------------------------------------------------------------'''
+        print(report)
+        if save_file:
+            f.write(report)
+    
+    if save_file:
+        f.close()
     print('#####################################################################')
 
 
