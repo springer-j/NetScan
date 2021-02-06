@@ -1,0 +1,1 @@
+{"os_settings": [{"os": ["Windows"], "data_path": "data\\", "clear_call": "cls"}, {"os": ["Linux", "Darwin"], "data_path": "data/", "clear_call": "clear"}], "ip_range": "10.0.0.1/24", "save_default": false}
