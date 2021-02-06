@@ -113,7 +113,7 @@ def scan():
 
 # FORMAT ALL CLIENTS INTO A READABLE STRING
 def generate_report(client_list):
-    report = ''
+    report = '######################################'
     if client_list:
         for clients in client_list[0:]:
             format = f''' 
@@ -134,23 +134,25 @@ def generate_report(client_list):
 
 # SAVE TO REPORT TO .TXT FILE
 def save_file(client_list):
-    if json_save_settings:
-        clear()
-        print(f' [+] FOUND {str(len(client_list))} CLIENTS')
-        print(' [+] ENTER NAME FOR NEW FILE')
-        new_file_name = take()
-        # GET DATA FILE OS PATH STRUCTURE FROM JSON DATA
-        data_file = json_os_settings["data_path"]
-        # SAVE FILE
-        report_file = data_file + new_file_name
-        with open(report_file,'w') as file:
-            file.write(generate_report(client_list))
-        file.close()
-        print(f' [+] FILE SAVED')
-        print(f' > {report_file}')
-        print(' > PRESS ENTER TO RETURN TO MENU')
-        take()
-        main_ui()
+    clear()
+    print(f' [+] FOUND {str(len(client_list))} CLIENTS')
+    print(' [+] ENTER NAME FOR NEW FILE')
+    new_file_name = take()
+    clear()
+    print(' [+] SAVING ...')
+    # GET DATA FILE OS PATH STRUCTURE FROM JSON DATA
+    data_file = json_os_settings["data_path"]
+    # SAVE FILE
+    report_file = data_file + new_file_name
+    with open(report_file,'w') as file:
+        file.write(generate_report(client_list))
+    file.close()
+    clear()
+    print(f' [+] FILE SAVED')
+    print(f' > {report_file}')
+    print(' > PRESS ENTER TO RETURN TO MENU')
+    take()
+    main_ui()
 
 
 #########################################################
@@ -175,7 +177,7 @@ def take():
 # MAIN UI AT START
 def main_ui():
     clear()
-    print('\n\n\n\t~~~ NETSCAN ~~~')
+    print('\t~~~ NETSCAN ~~~')
     print('\n [+] SYSTEM CONFIGURATION: ' + json_os_settings["os"][json_os_settings["os"].index(platform.system())].upper())
     print(' [+] IP RANGE: ' + json_ip_range )
     print(' [+] AUTOSAVE REPORT: ' + str(json_save_settings).upper())
@@ -191,6 +193,13 @@ def main_ui():
         clear()
         report = generate_report(client_list)
         print(report)
+        print(' > TYPE [SAVE] TO SAVE FILE')
+        print(' > PRESS [ENTER] TO RETURN TO HOME')
+        cont = take()
+        if cont.lower() == 'save':
+            save_file(client_list)
+        main_ui()
+            
     
 
 if __name__ == '__main__':
